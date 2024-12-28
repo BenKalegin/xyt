@@ -1,0 +1,46 @@
+.spreadsheet-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    outline: none;
+}
+
+.spreadsheet-row {
+    display: flex;
+}
+
+.cell {
+    border: 1px solid #ccc;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+}
+
+.cell.selected {
+    background-color: #b3d9ff;
+    border: 2px solid #007bff;
+}
+
+.spreadsheet-grid {
+    display: grid;
+    grid-template-rows: repeat(10, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0;
+}
+
+.row {
+    display: contents;
+}
+
+.cell {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.cell.selected {
+    background-color: #b3d4fc;
+}
