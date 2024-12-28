@@ -1,0 +1,16 @@
+.app-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.spreadsheet {
+  flex: 3;
+  border-right: 1px solid #ccc;
+  padding: 1rem;
+}
+
+.data-wizards {
+  flex: 1;
+  padding: 1rem;
+}
