@@ -1,17 +1,23 @@
-.spreadsheet-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    outline: none;
-}
-
 .spreadsheet-row {
     display: flex;
 }
 
+.spreadsheet-grid {
+    display: grid;
+    grid-template-rows: repeat(10, auto);
+    grid-template-columns: repeat(10, auto);
+    gap: 0;
+    outline: none;
+}
+
+.row {
+    display: contents;
+}
+
 .cell {
     border: 1px solid #ccc;
-    width: 40px;
+    padding: 1px;
+    width: 100px;
     height: 40px;
     display: flex;
     align-items: center;
@@ -24,22 +30,7 @@
     border: 2px solid #007bff;
 }
 
-.spreadsheet-grid {
-    display: grid;
-    grid-template-rows: repeat(10, 1fr);
-    grid-template-columns: repeat(10, 1fr);
-    gap: 0;
-}
 
-.row {
-    display: contents;
-}
-
-.cell {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-}
 
 .cell.selected {
     background-color: #b3d4fc;
