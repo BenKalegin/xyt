@@ -42,32 +42,52 @@ const Spreadsheet: React.FC = () => {
         });
     };
 
+    const getColumnHeader = (index: number) => {
+        let column = "";
+        while (index >= 0) {
+            column = String.fromCharCode((index % 26) + 65) + column;
+            index = Math.floor(index / 26) - 1;
+        }
+        return column;
+    };
+
     return (
         <div
-            className="spreadsheet-grid"
+            className="spreadsheet-container"
             tabIndex={0}
             onKeyDown={handleKeyDown}
             ref={gridRef}
         >
-            {Array.from({ length: VISIBLE_ROWS }).map((_, rowIndex) => (
-                <div key={rowIndex} className="spreadsheet-row">
-                    {Array.from({ length: VISIBLE_COLS }).map((_, colIndex) => {
-                        const actualRow = viewport.startRow + rowIndex;
-                        const actualCol = viewport.startCol + colIndex;
-                        return (
-                            <div
-                                key={colIndex}
-                                className={`cell ${
-                                    selectedCell.row === actualRow && selectedCell.col === actualCol
-                                        ? 'selected'
-                                        : ''
-                                }`}
-                            >
-                            </div>
-                        );
-                    })}
-                </div>
-            ))}
+            <div className="spreadsheet-header">
+                <div className="row-header-empty" />
+                {Array.from({ length: VISIBLE_COLS }).map((_, colIndex) => (
+                    <div key={colIndex} className="column-header">
+                        {getColumnHeader(viewport.startCol + colIndex)}
+                    </div>
+                ))}
+            </div>
+            <div className="spreadsheet-body">
+                {Array.from({ length: VISIBLE_ROWS }).map((_, rowIndex) => (
+                    <div key={rowIndex} className="spreadsheet-row">
+                        <div className="row-header">{viewport.startRow + rowIndex + 1}</div>
+                        {Array.from({ length: VISIBLE_COLS }).map((_, colIndex) => {
+                            const actualRow = viewport.startRow + rowIndex;
+                            const actualCol = viewport.startCol + colIndex;
+                            return (
+                                <div
+                                    key={colIndex}
+                                    className={`cell ${
+                                        selectedCell.row === actualRow && selectedCell.col === actualCol
+                                            ? 'selected'
+                                            : ''
+                                    }`}
+                                >
+                                </div>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
