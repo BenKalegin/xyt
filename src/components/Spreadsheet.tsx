@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import InputCellEditor from "./InputCellEditor";
 import './Spreadsheet.css';
 
 const VISIBLE_ROWS = 20;
@@ -108,13 +109,10 @@ const Spreadsheet: React.FC = () => {
                                     onDoubleClick={() => setEditingCell({ row: actualRow, col: actualCol })}
                                 >
                                     {isEditing ? (
-                                        <input
-                                            type="text"
-                                            className="cell-editor"
+                                        <InputCellEditor
                                             value={getCellContent(actualRow, actualCol)}
                                             onChange={handleInputChange}
                                             onBlur={handleBlur}
-                                            autoFocus
                                         />
                                     ) : (
                                         getCellContent(actualRow, actualCol)
