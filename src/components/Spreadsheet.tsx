@@ -40,7 +40,13 @@ const Spreadsheet: React.FC = () => {
                     col = Math.min(col + 1, MAX_COLS - 1);
                     break;
                 case 'Enter':
+                case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+                case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
                     setEditingCell(prev);
+                    if (e.key !== 'Enter') {
+                        setCellData((prev) => ({ ...prev, [`${row},${col}`]: e.key }));
+                    }
                     break;
             }
             const startRow = Math.min(Math.max(viewport.startRow, row - VISIBLE_ROWS + 1), row);
@@ -50,8 +56,23 @@ const Spreadsheet: React.FC = () => {
         });
     };
 
-    const handleBlur = () => {
+    const handleBlur = (moveToNextCell: boolean) => {
         setEditingCell(null);
+        if (moveToNextCell) {
+            setSelectedCell((prev) => {
+                let { row, col } = prev;
+                if (col < MAX_COLS - 1) {
+                    col++;
+                } else if (row < MAX_ROWS - 1) {
+                    row++;
+                    col = 0;
+                }
+                return { row, col };
+            });
+        }
+        if (gridRef.current) {
+            gridRef.current.focus();
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
