@@ -10,7 +10,7 @@ const MAX_COLS = 16384;
 const Spreadsheet: React.FC = () => {
     const [selectedCell, setSelectedCell] = useState({ row: 0, col: 0 });
     const [editingCell, setEditingCell] = useState<{ row: number; col: number } | null>(null);
-    const [cellData, setCellData] = useState<Record<string, string>>({});
+    const [cellData, setCellData] = useState<Record<string, CellData>>({});
     const [viewport, setViewport] = useState({ startRow: 0, startCol: 0 });
     const gridRef = useRef<HTMLDivElement>(null);
 
@@ -19,6 +19,24 @@ const Spreadsheet: React.FC = () => {
             gridRef.current.focus();
         }
     }, []);
+
+    function autoAlignment(content: string) {
+        // if looks like number, align right
+        if (/^-?\d*\.?\d*$/.test(content)) {
+            return 'right';
+        }
+        // if looks like date, align center
+        if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(content)) {
+            return 'center';
+        }
+
+        // if looks like time, align center
+        if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(content)) {
+            return 'center';
+        }
+
+        return 'left';
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (editingCell) return;
@@ -55,7 +73,11 @@ const Spreadsheet: React.FC = () => {
                 case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
                     setEditingCell(prev);
                     if (e.key !== 'Enter') {
-                        setCellData((prev) => ({ ...prev, [`${row},${col}`]: e.key }));
+                        let newCell = { ...cellData[`${row},${col}`] };
+                        newCell.content = e.key;
+                        newCell.alignment = newCell.alignment || autoAlignment(newCell.content)
+
+                        setCellData((prev) => ({ ...prev, [`${row},${col}`]: newCell }));
                     }
                     break;
             }
@@ -87,7 +109,10 @@ const Spreadsheet: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const key = `${editingCell?.row},${editingCell?.col}`;
-        setCellData((prev) => ({ ...prev, [key]: e.target.value }));
+        const cell = { ...cellData[key] };
+        cell.content = e.target.value;
+        cell.alignment = autoAlignment(cell.content);
+        setCellData((prev) => ({ ...prev, [key]: cell }));
     };
 
     const handleCellClick = (row: number, col: number) => {
@@ -132,8 +157,9 @@ const Spreadsheet: React.FC = () => {
                             const actualCol = viewport.startCol + colIndex;
                             const isEditing = editingCell?.row === actualRow && editingCell?.col === actualCol;
                             const isSelected = selectedCell.row === actualRow && selectedCell.col === actualCol;
+                            const cellContent = getCellContent(actualRow, actualCol);
                             return (
-                                <div
+                                <div style={{ justifyContent: cellContent.alignment || 'left' }}
                                     key={colIndex}
                                     className={`cell ${ isSelected ? 'selected' : '' }`}
                                     onClick={() => handleCellClick(actualRow, actualCol)}
@@ -141,12 +167,12 @@ const Spreadsheet: React.FC = () => {
                                 >
                                     {isEditing ? (
                                         <InputCellEditor
-                                            value={getCellContent(actualRow, actualCol)}
+                                            value={cellContent.content}
                                             onChange={handleInputChange}
                                             onBlur={handleBlur}
                                         />
                                     ) : (
-                                        getCellContent(actualRow, actualCol)
+                                        cellContent.content
                                     )}
                                 </div>
                             );
