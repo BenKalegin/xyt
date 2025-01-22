@@ -46,16 +46,37 @@ const Spreadsheet: React.FC = () => {
             let { row, col } = prev;
             switch (e.key) {
                 case 'ArrowUp':
-                    row = Math.max(row - 1, 0);
+                    if(e.ctrlKey) {
+                        while (row > 0 && cellData[`${row - 1},${col}`]) {
+                            row--;
+                        }
+                    }else
+                        row = Math.max(row - 1, 0);
                     break;
                 case 'ArrowDown':
-                    row = Math.min(row + 1, MAX_ROWS - 1);
+                    if (e.ctrlKey) {
+                        while (row < MAX_ROWS - 1 && cellData[`${row + 1},${col}`]) {
+                            row++;
+                        }
+                    }else
+                        row = Math.min(row + 1, MAX_ROWS - 1);
                     break;
                 case 'ArrowLeft':
-                    col = Math.max(col - 1, 0);
+                    if(e.ctrlKey) {
+                        while (col > 0 && cellData[`${row},${col - 1}`]) {
+                            col--;
+                        }
+                    } else
+                        col = Math.max(col - 1, 0);
                     break;
                 case 'ArrowRight':
-                    col = Math.min(col + 1, MAX_COLS - 1);
+                    if (e.ctrlKey) {
+                        while (col < MAX_COLS - 1 && cellData[`${row},${col + 1}`]) {
+                            col++;
+                        }
+                    } else {
+                        col = Math.min(col + 1, MAX_COLS - 1);
+                    }
                     break;
 
                 case 'Delete':
